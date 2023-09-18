@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      input {
+        width: 300px;
+        height: 50px;
+        font-size: large;
+      }
+    </style>
+    <title>index</title>
+  </head>
+  <body>
+    <input type="text" onkeyup="sendData(this)" />
+    <section id="searchResults"></section>
+    <script>
+      const sendData = (e) => {
+        fetch("/api/v1/beta-mart/get-autoComplete", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ payload: e.value }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            let payload = data.payload;
+            searchResults.innerHTML = "";
+            if (payload.length < 1) {
+              searchResults.innerHTML = "<p>soryy Nothing Found</p>";
+              return;
+            }
+            payload.forEach((item, index) => {
+              if (index > 0) {
+                searchResults.innerHTML += "<hr>";
+              }
+              searchResults.innerHTML += `<p>${item}</p>`;
+            });
+            console.log(payload);
+          });
+      };
+    </script>
+  </body>
+</html>
